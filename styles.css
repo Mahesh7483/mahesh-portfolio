@@ -169,10 +169,10 @@ strong { font-weight: 600; color: var(--ink); }
   width: var(--s);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(closest-side, var(--c) 0%, color-mix(in srgb, var(--c) 60%, transparent) 40%, transparent 74%);
+  background: radial-gradient(closest-side, var(--c) 0%, color-mix(in srgb, var(--c) 55%, transparent) 34%, color-mix(in srgb, var(--c) 18%, transparent) 60%, transparent 82%);
   opacity: var(--aurora-alpha);
   transform: translate3d(calc(var(--px) * var(--depth)), calc(var(--py) * var(--depth)), 0);
-  will-change: transform, translate, scale;
+  will-change: transform, translate;
 }
 
 .aurora .a1 { --s: 70vw; --c: var(--au-1); --depth: .55; top: -30vw; left: -18vw; }
@@ -180,17 +180,15 @@ strong { font-weight: 600; color: var(--ink); }
 .aurora .a3 { --s: 46vw; --c: var(--au-3); --depth: .7;  top: 30vh; left: 34vw; }
 .aurora .a4 { --s: 52vw; --c: var(--au-4); --depth: 1.2; top: -10vh; right: 8vw; }
 
-@media (min-width: 900px) { .aurora span { filter: blur(30px); } }
-
 .aurora .a1 { animation: drift-1 36s ease-in-out infinite alternate; }
 .aurora .a2 { animation: drift-2 29s ease-in-out infinite alternate; }
 .aurora .a3 { animation: drift-3 41s ease-in-out infinite alternate; }
 .aurora .a4 { animation: drift-4 33s ease-in-out infinite alternate; }
 
-@keyframes drift-1 { from { translate: 0 0; scale: 1;    rotate: 0deg; } to { translate: 12vw 10vh;   scale: 1.18; rotate: 40deg; } }
-@keyframes drift-2 { from { translate: 0 0; scale: 1.05; }               to { translate: -18vw -14vh; scale: .9; } }
-@keyframes drift-3 { from { translate: 0 0; scale: .95; }                to { translate: -20vw 12vh;  scale: 1.25; } }
-@keyframes drift-4 { from { translate: 0 0; scale: 1; }                  to { translate: -16vw 18vh;  scale: 1.12; } }
+@keyframes drift-1 { from { translate: 0 0; rotate: 0deg; } to { translate: 12vw 10vh; rotate: 40deg; } }
+@keyframes drift-2 { from { translate: 0 0; } to { translate: -18vw -14vh; } }
+@keyframes drift-3 { from { translate: 0 0; } to { translate: -20vw 12vh; } }
+@keyframes drift-4 { from { translate: 0 0; } to { translate: -16vw 18vh; } }
 
 /* ---------- the panel ---------- */
 
@@ -456,7 +454,7 @@ strong { font-weight: 600; color: var(--ink); }
   pointer-events: none;
   filter: drop-shadow(0 18px 30px rgba(255, 63, 216, .38));
   transform: translate(calc(var(--hx, 0) * var(--dp)), calc(var(--hy, 0) * var(--dp)));
-  transition: transform .7s cubic-bezier(.2, .8, .2, 1);
+  transition: transform .3s cubic-bezier(.22, .68, .3, 1);
 }
 .hex {
   position: absolute;
@@ -573,10 +571,10 @@ strong { font-weight: 600; color: var(--ink); }
 /* pointer-parallax on the flat stage layers (script.js sets --hx/--hy on :root) */
 .feature-tile {
   translate: calc(var(--hx, 0) * 12px) calc(var(--hy, 0) * 12px);
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, translate .7s cubic-bezier(.2, .8, .2, 1);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, translate .3s cubic-bezier(.22, .68, .3, 1);
 }
-.plus-grid { translate: calc(var(--hx, 0) * -10px) calc(var(--hy, 0) * -8px); transition: translate .9s ease-out; }
-.squiggle  { translate: calc(var(--hx, 0) * -16px) calc(var(--hy, 0) * -12px); transition: translate .9s ease-out; }
+.plus-grid { translate: calc(var(--hx, 0) * -10px) calc(var(--hy, 0) * -8px); transition: translate .45s ease-out; }
+.squiggle  { translate: calc(var(--hx, 0) * -16px) calc(var(--hy, 0) * -12px); transition: translate .5s ease-out; }
 
 /* --- the glass cube --- */
 
@@ -609,7 +607,7 @@ strong { font-weight: 600; color: var(--ink); }
   inset: 0;
   transform-style: preserve-3d;
   transform: rotateX(calc(var(--hy, 0) * -7deg)) rotateY(calc(var(--hx, 0) * 9deg));
-  transition: transform .8s cubic-bezier(.2, .8, .2, 1);
+  transition: transform .22s cubic-bezier(.22, .68, .3, 1);
 }
  .scene { animation: bob 6s ease-in-out infinite; } 
 @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
@@ -1083,7 +1081,8 @@ strong { font-weight: 600; color: var(--ink); }
   transition: opacity .4s ease;
 }
 .glass:hover::before { opacity: 1; }
- .glass::before { animation: edge-spin 12s linear infinite; } 
+ .glass::before { animation: edge-spin 12s linear infinite; animation-play-state: paused; }
+.glass:hover::before { animation-play-state: running; } 
 @keyframes edge-spin { to { --edge-angle: 360deg; } }
 
 /* specular highlight following the pointer (script.js sets --mx/--my) */
