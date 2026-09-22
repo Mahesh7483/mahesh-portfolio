@@ -659,6 +659,7 @@ strong { font-weight: 600; color: var(--ink); }
 .tile-kicker { grid-column: 1; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .tile-num { grid-column: 1; font-family: var(--font-display); font-weight: 700; font-size: clamp(2.6rem, 3.4vw, 3.4rem); line-height: 1; margin-top: .35rem; letter-spacing: -.03em; width: fit-content; }
 .tile-num small { font-size: .5em; }
+.tile-name { font-size: clamp(1.9rem, 2.3vw, 2.35rem); letter-spacing: -.02em; margin-top: .45rem; padding-bottom: .08em; }
 .tile-label { grid-column: 1; align-self: end; font-family: var(--font-mono); font-size: .72rem; line-height: 1.5; color: var(--ink-2); margin-top: .75rem; }
 .tile-vert {
   grid-column: 2;
