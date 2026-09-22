@@ -1184,18 +1184,6 @@ html.js .reveal.in { opacity: 1; translate: none; }
 :root[data-motion="off"] .squiggle { translate: none; }
 :root[data-motion="off"] .squiggle path { stroke-dasharray: none; }
 
-/* Off also means "cheap to draw": no backdrop blur to recompute, no drifting
-   light behind the panel. This is the light version for low-powered machines. */
-:root[data-motion="off"] .glass,
-:root[data-motion="off"] .site-header {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  background: #14141f;
-}
-:root[data-motion="off"] .glass::before,
-:root[data-motion="off"] .glass::after { display: none; }
-:root[data-motion="off"] .aurora { opacity: .45; }
-
 @media (prefers-reduced-motion: reduce) {
   :root:not([data-motion]) *,
   :root:not([data-motion]) *::before,

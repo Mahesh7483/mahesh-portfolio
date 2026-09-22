@@ -22,14 +22,11 @@
   <link rel="stylesheet" href="styles.css">
 
   <script>
-    /* Follows the operating system's reduced-motion setting unless this visitor
-       chose otherwise with the control in the navigation. */
+    /* Motion is on unless this visitor turned it off (see the control in the nav). */
     (function () {
-      var stored = null;
-      try { stored = localStorage.getItem("mr-motion"); } catch (e) {}
-      var os = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      document.documentElement.dataset.motion =
-        stored === "on" || stored === "off" ? stored : (os ? "off" : "on");
+      var v = null;
+      try { v = localStorage.getItem("mr-motion"); } catch (e) {}
+      document.documentElement.dataset.motion = v === "off" ? "off" : "on";
     })();
   </script>
 
@@ -79,7 +76,7 @@
             <li><a href="#education">Education</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
-          <button class="motion-toggle" type="button" aria-pressed="true" aria-label="Turn motion off" title="Motion &amp; effects">
+          <button class="motion-toggle" type="button" aria-pressed="true" aria-label="Turn motion off" title="Motion">
             <svg class="icon icon-motion-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12c2-6 4 6 6 0s4 6 6 0 4 6 6 0"/></svg>
             <svg class="icon icon-motion-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M5 6l14 12"/></svg>
           </button>
