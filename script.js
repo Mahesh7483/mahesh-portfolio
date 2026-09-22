@@ -1,4 +1,5 @@
-/* Mahesh R — portfolio: theme toggle, mobile nav, active section, reveal.
+/* Mahesh R — portfolio: mobile nav, active section, reveal, and the
+   signature pointer-driven light (aurora parallax, glass specular + tilt).
    Everything here is progressive enhancement; the page reads fine without it. */
 
 (function () {
@@ -7,51 +8,7 @@
   var root = document.documentElement;
   root.classList.add("js");
 
-  /* ---------- theme ---------- */
-
-  var THEME_KEY = "mr-theme";
-  var toggle = document.querySelector(".theme-toggle");
-  var mql = window.matchMedia("(prefers-color-scheme: dark)");
-
-  function storedTheme() {
-    try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
-  }
-
-  function currentTheme() {
-    var explicit = root.getAttribute("data-theme");
-    if (explicit) return explicit;
-    return mql.matches ? "dark" : "light";
-  }
-
-  function applyTheme(theme, persist) {
-    if (theme) root.setAttribute("data-theme", theme);
-    else root.removeAttribute("data-theme");
-    if (persist) {
-      try {
-        if (theme) localStorage.setItem(THEME_KEY, theme);
-        else localStorage.removeItem(THEME_KEY);
-      } catch (e) { /* storage unavailable: theme still applies for this view */ }
-    }
-    if (toggle) {
-      var next = currentTheme() === "dark" ? "light" : "dark";
-      toggle.setAttribute("aria-label", "Switch to " + next + " theme");
-    }
-  }
-
-  applyTheme(storedTheme(), false);
-
-  if (toggle) {
-    toggle.addEventListener("click", function () {
-      applyTheme(currentTheme() === "dark" ? "light" : "dark", true);
-    });
-  }
-
-  // Follow the OS again if the user never chose explicitly.
-  if (mql.addEventListener) {
-    mql.addEventListener("change", function () {
-      if (!storedTheme()) applyTheme(null, false);
-    });
-  }
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- mobile nav ---------- */
 
@@ -107,7 +64,6 @@
   /* ---------- reveal on scroll ---------- */
 
   var reveals = document.querySelectorAll(".reveal");
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (!reduce && "IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (entries) {
@@ -118,5 +74,63 @@
     reveals.forEach(function (el) { io.observe(el); });
   } else {
     reveals.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  /* ---------- signature: aurora parallax + liquid-glass light ----------
+     Fine pointers only, never under reduced motion. One requestAnimationFrame
+     per pointer burst, writing CSS variables only; the compositor does the rest. */
+
+  var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (finePointer && !reduce) {
+    var aurora = document.querySelector(".aurora");
+    var glassEls = Array.prototype.slice.call(document.querySelectorAll(".glass"));
+    var TILT_MAX = 2.5;      // degrees
+    var PARALLAX_MAX = 30;   // px at the viewport edge
+    var pending = false;
+    var px = 0, py = 0;
+    var hovered = null, hx = 0, hy = 0;
+
+    function noTilt(el) {
+      return el.classList.contains("card-featured") || el.classList.contains("facts-strip");
+    }
+
+    function flush() {
+      pending = false;
+      if (aurora) {
+        aurora.style.setProperty("--px", px.toFixed(1) + "px");
+        aurora.style.setProperty("--py", py.toFixed(1) + "px");
+      }
+      if (hovered) {
+        var r = hovered.getBoundingClientRect();
+        var nx = (hx - r.left) / r.width;   // 0..1 across the surface
+        var ny = (hy - r.top) / r.height;
+        hovered.style.setProperty("--mx", (nx * 100).toFixed(1) + "%");
+        hovered.style.setProperty("--my", (ny * 100).toFixed(1) + "%");
+        if (!noTilt(hovered)) {
+          hovered.style.setProperty("--ry", ((nx - 0.5) * 2 * TILT_MAX).toFixed(2) + "deg");
+          hovered.style.setProperty("--rx", ((0.5 - ny) * 2 * TILT_MAX).toFixed(2) + "deg");
+        }
+      }
+    }
+
+    function schedule() {
+      if (!pending) { pending = true; requestAnimationFrame(flush); }
+    }
+
+    document.addEventListener("pointermove", function (e) {
+      px = ((e.clientX / window.innerWidth) - 0.5) * 2 * PARALLAX_MAX;
+      py = ((e.clientY / window.innerHeight) - 0.5) * 2 * PARALLAX_MAX;
+      hx = e.clientX; hy = e.clientY;
+      schedule();
+    }, { passive: true });
+
+    glassEls.forEach(function (el) {
+      el.addEventListener("pointerenter", function () { hovered = el; schedule(); });
+      el.addEventListener("pointerleave", function () {
+        if (hovered === el) hovered = null;
+        el.style.removeProperty("--rx");
+        el.style.removeProperty("--ry");
+      });
+    });
   }
 })();
