@@ -395,7 +395,7 @@ strong { font-weight: 600; color: var(--ink); }
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   min-height: clamp(280px, 30vw, 400px);
-  margin-top: clamp(-3rem, -2.5vw, -1.5rem);
+  margin-top: clamp(-4rem, -3.4vw, -2rem);
   z-index: 1;
 }
 
@@ -430,52 +430,109 @@ strong { font-weight: 600; color: var(--ink); }
 }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
-/* --- floating 3-D crystals: regular octahedra, 8 triangular faces ---
-   Each face is a triangle of base 2a and slant height a*sqrt(3), hinged on the
-   equator and tilted 35.26deg toward the axis; backfaces are culled so the
-   solid renders correctly from any angle. --dp is the pointer-parallax depth. */
-.gem3d {
+/* --- floating crystals: hexagonal dipyramids, 12 triangular faces ---
+   Circumradius r: each face has base r (one hexagon edge) and slant height
+   1.323r, hinged on the equator at the apothem (.866r) and tilted 40.9deg to
+   meet the apex at height r. Backfaces are culled so the solid renders
+   correctly from any angle. --dp is the pointer-parallax depth. */
+.hexgem {
   position: absolute;
-  width: calc(var(--a) * 2);
-  height: calc(var(--a) * 2.83);
+  width: calc(var(--r) * 2);
+  height: calc(var(--r) * 2);
   perspective: 700px;
   pointer-events: none;
-  filter: drop-shadow(0 18px 28px rgba(255, 63, 216, .35));
+  filter: drop-shadow(0 18px 30px rgba(255, 63, 216, .38));
   transform: translate(calc(var(--hx, 0) * var(--dp)), calc(var(--hy, 0) * var(--dp)));
   transition: transform .7s cubic-bezier(.2, .8, .2, 1);
 }
-.oct {
+.hex {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  transform: rotateX(-18deg);
+  transform: rotateX(-30deg);
+  will-change: transform;
 }
-@media (prefers-reduced-motion: no-preference) { .oct { animation: tumble var(--t, 16s) linear infinite; } }
-@keyframes tumble { from { transform: rotateX(-18deg) rotateY(0deg); } to { transform: rotateX(-18deg) rotateY(360deg); } }
+@media (prefers-reduced-motion: no-preference) { .hexgem .hex { animation: tumble var(--t, 18s) linear infinite; } }
+@keyframes tumble { from { transform: rotateX(-30deg) rotateY(0deg); } to { transform: rotateX(-30deg) rotateY(360deg); } }
 
-.oct i {
+.hex i {
   position: absolute;
-  left: 0;
-  width: calc(var(--a) * 2);
-  height: calc(var(--a) * 1.732);
+  left: calc(50% - var(--r) / 2);
+  width: var(--r);
+  height: calc(var(--r) * 1.323);
   backface-visibility: hidden;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 48%), var(--c);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
 }
-.oct .u { top: calc(50% - var(--a) * 1.732); clip-path: polygon(50% 0, 100% 100%, 0 100%); transform-origin: 50% 100%; }
-.oct .d { top: 50%; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; }
-.oct .u1 { --c: linear-gradient(180deg, #ff9af0, var(--mag)); transform: rotateY(0deg)   translateZ(var(--a)) rotateX(35.26deg); }
-.oct .u2 { --c: linear-gradient(180deg, #c9b3ff, var(--vio)); transform: rotateY(90deg)  translateZ(var(--a)) rotateX(35.26deg); }
-.oct .u3 { --c: linear-gradient(180deg, #8ea0ff, var(--blu)); transform: rotateY(180deg) translateZ(var(--a)) rotateX(35.26deg); }
-.oct .u4 { --c: linear-gradient(180deg, #ffc48f, var(--ora)); transform: rotateY(270deg) translateZ(var(--a)) rotateX(35.26deg); }
-.oct .d1 { --c: linear-gradient(0deg, #b0148f, var(--mag)); transform: rotateY(0deg)   translateZ(var(--a)) rotateX(-35.26deg); }
-.oct .d2 { --c: linear-gradient(0deg, #4a12a8, var(--vio)); transform: rotateY(90deg)  translateZ(var(--a)) rotateX(-35.26deg); }
-.oct .d3 { --c: linear-gradient(0deg, #1a2aa8, var(--blu)); transform: rotateY(180deg) translateZ(var(--a)) rotateX(-35.26deg); }
-.oct .d4 { --c: linear-gradient(0deg, #b8501a, var(--ora)); transform: rotateY(270deg) translateZ(var(--a)) rotateX(-35.26deg); }
+.hex .u {
+  top: calc(50% - var(--r) * 1.323);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  transform-origin: 50% 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .44), rgba(255, 255, 255, .06) 46%, rgba(0, 0, 0, .14) 100%), var(--c);
+}
+.hex .d {
+  top: 50%;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: 50% 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, .46), rgba(0, 0, 0, .06) 55%, rgba(255, 255, 255, .14) 100%), var(--c);
+}
+.hex .u1 { transform: rotateY(0deg)   translateZ(calc(var(--r) * .866)) rotateX(40.9deg); }
+.hex .u2 { transform: rotateY(60deg)  translateZ(calc(var(--r) * .866)) rotateX(40.9deg); }
+.hex .u3 { transform: rotateY(120deg) translateZ(calc(var(--r) * .866)) rotateX(40.9deg); }
+.hex .u4 { transform: rotateY(180deg) translateZ(calc(var(--r) * .866)) rotateX(40.9deg); }
+.hex .u5 { transform: rotateY(240deg) translateZ(calc(var(--r) * .866)) rotateX(40.9deg); }
+.hex .u6 { transform: rotateY(300deg) translateZ(calc(var(--r) * .866)) rotateX(40.9deg); }
+.hex .d1 { transform: rotateY(0deg)   translateZ(calc(var(--r) * .866)) rotateX(-40.9deg); }
+.hex .d2 { transform: rotateY(60deg)  translateZ(calc(var(--r) * .866)) rotateX(-40.9deg); }
+.hex .d3 { transform: rotateY(120deg) translateZ(calc(var(--r) * .866)) rotateX(-40.9deg); }
+.hex .d4 { transform: rotateY(180deg) translateZ(calc(var(--r) * .866)) rotateX(-40.9deg); }
+.hex .d5 { transform: rotateY(240deg) translateZ(calc(var(--r) * .866)) rotateX(-40.9deg); }
+.hex .d6 { transform: rotateY(300deg) translateZ(calc(var(--r) * .866)) rotateX(-40.9deg); }
 
-.gem-a { --a: clamp(38px, 4.4vw, 56px); --dp: 26px; --t: 18s; left: 5%; top: -4%; rotate: -14deg; }
-.gem-b { --a: clamp(20px, 2.2vw, 28px); --dp: 42px; --t: 12s; left: 17%; bottom: 16%; rotate: 18deg; }
-.gem-c { --a: clamp(24px, 2.6vw, 34px); --dp: 16px; --t: 22s; right: 13%; bottom: 4%; rotate: 10deg; }
+/* palette: floating gems — magenta, violet, blue (the reference crystals) */
+.hex .u1 { --c: linear-gradient(180deg, #ff7ae8, #ff2fd4); }
+.hex .u2 { --c: linear-gradient(180deg, #c48bff, #8b2be2); }
+.hex .u3 { --c: linear-gradient(180deg, #6f5cff, #3a2bff); }
+.hex .u4 { --c: linear-gradient(180deg, #ff58df, #d21ab6); }
+.hex .u5 { --c: linear-gradient(180deg, #b25bff, #6f1fd6); }
+.hex .u6 { --c: linear-gradient(180deg, #ffa2ef, #ff4fe1); }
+.hex .d1 { --c: linear-gradient(0deg, #a5128e, #ff2fd4); }
+.hex .d2 { --c: linear-gradient(0deg, #4a12a8, #8b2be2); }
+.hex .d3 { --c: linear-gradient(0deg, #1e1a8c, #3a2bff); }
+.hex .d4 { --c: linear-gradient(0deg, #8c0f78, #d21ab6); }
+.hex .d5 { --c: linear-gradient(0deg, #3d0f8a, #6f1fd6); }
+.hex .d6 { --c: linear-gradient(0deg, #c0209c, #ff4fe1); }
+
+/* palette: the gem inside the glass cube — deep navy, magenta, violet, orange base, one cyan facet */
+.navy .hex .u1 { --c: linear-gradient(180deg, #2b34c4, #171c6e); }
+.navy .hex .u2 { --c: linear-gradient(180deg, #ff5fe0, #e21fc0); }
+.navy .hex .u3 { --c: linear-gradient(180deg, #8f45ff, #5c1fd4); }
+.navy .hex .u4 { --c: linear-gradient(180deg, #232a9c, #12155a); }
+.navy .hex .u5 { --c: linear-gradient(180deg, #3f52ff, #2534d8); }
+.navy .hex .u6 { --c: linear-gradient(180deg, #ff8be9, #ff3fd8); }
+.navy .hex .d1 { --c: linear-gradient(0deg, #ff9a4a, #ff6a3d); }
+.navy .hex .d2 { --c: linear-gradient(0deg, #ff6fb5, #ff3fa0); }
+.navy .hex .d3 { --c: linear-gradient(0deg, #1b2fd6, #2d44ff); }
+.navy .hex .d4 { --c: linear-gradient(0deg, #ff7a5c, #ff9a4a); }
+.navy .hex .d5 { --c: linear-gradient(0deg, #b9f4ff, #5fd8ff); }
+.navy .hex .d6 { --c: linear-gradient(0deg, #ff2fd4, #ff64e6); }
+
+/* palette: the bookend gem — aqua, blue, violet */
+.aqua .hex .u1 { --c: linear-gradient(180deg, #8ff0ff, #38c6ff); }
+.aqua .hex .u2 { --c: linear-gradient(180deg, #c9fffa, #6ee7e0); }
+.aqua .hex .u3 { --c: linear-gradient(180deg, #a48bff, #7b2ff7); }
+.aqua .hex .u4 { --c: linear-gradient(180deg, #4f7dff, #2b36ff); }
+.aqua .hex .u5 { --c: linear-gradient(180deg, #7fe3ff, #34b4ff); }
+.aqua .hex .u6 { --c: linear-gradient(180deg, #d7c6ff, #a78bfa); }
+.aqua .hex .d1 { --c: linear-gradient(0deg, #146c9c, #38c6ff); }
+.aqua .hex .d2 { --c: linear-gradient(0deg, #1d8a86, #6ee7e0); }
+.aqua .hex .d3 { --c: linear-gradient(0deg, #3d128a, #7b2ff7); }
+.aqua .hex .d4 { --c: linear-gradient(0deg, #171d9c, #2b36ff); }
+.aqua .hex .d5 { --c: linear-gradient(0deg, #12628a, #34b4ff); }
+.aqua .hex .d6 { --c: linear-gradient(0deg, #5b3fb0, #a78bfa); }
+
+.gem-a { --r: clamp(44px, 4.6vw, 62px); --dp: 26px; --t: 20s; left: 5%; top: -6%; rotate: -12deg; }
+.gem-b { --r: clamp(22px, 2.3vw, 30px); --dp: 42px; --t: 13s; left: 17%; bottom: 16%; rotate: 16deg; }
+.gem-c { --r: clamp(26px, 2.7vw, 36px); --dp: 16px; --t: 24s; right: 13%; bottom: 4%; rotate: 8deg; }
 @media (prefers-reduced-motion: no-preference) {
   .gem-a { animation: float-a 7s ease-in-out infinite; }
   .gem-b { animation: float-b 5.5s ease-in-out infinite; }
@@ -500,20 +557,24 @@ strong { font-weight: 600; color: var(--ink); }
   justify-self: center;
   width: var(--cube);
   height: var(--cube);
-  --cube: clamp(190px, 24vw, 310px);
+  --cube: clamp(200px, 26vw, 340px);
   --half: calc(var(--cube) / 2);
+  perspective: 1000px;
 }
 
+/* light refracted onto the floor beneath the cube: orange, pink, cyan */
 .cube-glow {
   position: absolute;
-  inset: 8%;
+  left: -10%;
+  right: -10%;
+  top: 66%;
+  height: 52%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 63, 216, .55), rgba(47, 75, 255, .35) 48%, rgba(255, 138, 61, .2) 70%, transparent 82%);
+  background: radial-gradient(closest-side at 44% 50%, rgba(255, 180, 100, .55), rgba(255, 80, 200, .30) 48%, rgba(80, 220, 255, .26) 74%, transparent 100%);
   filter: blur(34px);
   pointer-events: none;
 }
 
-.scene-wrap { perspective: 1500px; }
 .scene {
   position: absolute;
   inset: 0;
@@ -521,16 +582,6 @@ strong { font-weight: 600; color: var(--ink); }
   transform: rotateX(calc(var(--hy, 0) * -7deg)) rotateY(calc(var(--hx, 0) * 9deg));
   transition: transform .8s cubic-bezier(.2, .8, .2, 1);
 }
-
-/* the small bookend cube above Contact */
-.scene-wrap.mini { --cube: clamp(96px, 10vw, 128px); grid-column: auto; margin: 0 auto 3.5rem; }
-.scene-wrap.mini .cube-glow { background: radial-gradient(closest-side, rgba(79, 209, 255, .5), rgba(123, 47, 247, .35) 50%, transparent 80%); }
-.cube.inner.alt .f.front  { background: linear-gradient(160deg, #b9fff6, #4fd1ff 38%, var(--vio)); }
-.cube.inner.alt .f.back   { background: linear-gradient(160deg, var(--vio), #2b36ff); }
-.cube.inner.alt .f.right  { background: linear-gradient(200deg, #2b36ff, #4fd1ff 55%, #b9fff6); }
-.cube.inner.alt .f.left   { background: linear-gradient(20deg, var(--vio), #4fd1ff 55%, #b9fff6); }
-.cube.inner.alt .f.top    { background: linear-gradient(180deg, #e6fffb, #4fd1ff 55%, #7b2ff7); }
-.cube.inner.alt .f.bottom { background: linear-gradient(0deg, var(--vio), #4fd1ff); }
 @media (prefers-reduced-motion: no-preference) { .scene { animation: bob 6s ease-in-out infinite; } }
 @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 
@@ -539,16 +590,10 @@ strong { font-weight: 600; color: var(--ink); }
   inset: 0;
   transform-style: preserve-3d;
   will-change: transform;
+  transform: rotateX(-24deg) rotateY(-32deg);
 }
-.cube.outer { transform: rotateX(-22deg) rotateY(38deg); }
-.cube.inner { transform: rotateX(-22deg) rotateY(-30deg) scale3d(.52, .52, .52) rotateZ(18deg); }
-
-@media (prefers-reduced-motion: no-preference) {
-  .cube.outer { animation: spin-outer 30s linear infinite; }
-  .cube.inner { animation: spin-inner 22s linear infinite; }
-}
-@keyframes spin-outer { from { transform: rotateX(-22deg) rotateY(0deg); }   to { transform: rotateX(-22deg) rotateY(360deg); } }
-@keyframes spin-inner { from { transform: rotateX(-22deg) rotateY(360deg) scale3d(.52, .52, .52) rotateZ(18deg); } to { transform: rotateX(-22deg) rotateY(0deg) scale3d(.52, .52, .52) rotateZ(18deg); } }
+@media (prefers-reduced-motion: no-preference) { .cube.outer { animation: spin-outer 34s linear infinite; } }
+@keyframes spin-outer { from { transform: rotateX(-24deg) rotateY(-32deg); } to { transform: rotateX(-24deg) rotateY(328deg); } }
 
 .cube .f {
   position: absolute;
@@ -563,25 +608,37 @@ strong { font-weight: 600; color: var(--ink); }
 .f.top    { transform: rotateX(90deg) translateZ(var(--half)); }
 .f.bottom { transform: rotateX(-90deg) translateZ(var(--half)); }
 
-/* outer: clear glass with faint refractive tints */
+/* clear glass: bright edges, faint tint, refraction blooms where light exits */
 .cube.outer .f {
-  border: 1px solid rgba(255, 255, 255, .42);
-  background: linear-gradient(135deg, rgba(255, 255, 255, .20), rgba(255, 255, 255, .03) 38%, rgba(255, 255, 255, .06) 70%, rgba(255, 255, 255, .22));
-  box-shadow: inset 0 0 50px rgba(255, 255, 255, .06);
+  border: 1.5px solid rgba(255, 255, 255, .64);
+  background: linear-gradient(135deg, rgba(255, 255, 255, .20), rgba(255, 255, 255, .03) 42%, rgba(255, 255, 255, .10) 100%);
+  box-shadow: inset 0 0 70px rgba(255, 255, 255, .05);
 }
-.cube.outer .f.front  { background: linear-gradient(135deg, rgba(120, 240, 255, .22), rgba(255, 255, 255, .02) 36%, rgba(255, 80, 220, .14) 100%); }
-.cube.outer .f.right  { background: linear-gradient(225deg, rgba(180, 140, 255, .20), rgba(255, 255, 255, .02) 40%, rgba(120, 240, 255, .12) 100%); }
-.cube.outer .f.top    { background: linear-gradient(180deg, rgba(255, 255, 255, .34), rgba(255, 255, 255, .08)); }
-.cube.outer .f.bottom { background: linear-gradient(0deg, rgba(255, 138, 61, .28), rgba(255, 255, 255, .04)); }
+.cube.outer .f.front  { background: linear-gradient(160deg, rgba(120, 235, 255, .20), rgba(255, 255, 255, .03) 36%, rgba(255, 60, 220, .14) 68%, rgba(255, 170, 90, .34) 100%); }
+.cube.outer .f.left   { background: linear-gradient(200deg, rgba(180, 140, 255, .18), rgba(255, 255, 255, .03) 40%, rgba(255, 120, 200, .14) 75%, rgba(120, 235, 255, .28) 100%); }
+.cube.outer .f.right  { background: linear-gradient(200deg, rgba(255, 80, 220, .12), rgba(255, 255, 255, .02) 45%, rgba(120, 235, 255, .12) 100%); }
+.cube.outer .f.back   { background: linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02)); }
+.cube.outer .f.top    { background: linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(255, 255, 255, .05)); }
+.cube.outer .f.bottom { background: radial-gradient(62% 58% at 42% 46%, rgba(255, 228, 180, .78), rgba(255, 120, 60, .42) 38%, rgba(255, 70, 200, .30) 62%, rgba(80, 220, 255, .22) 84%, transparent 100%); }
 
-/* inner: the gem */
-.cube.inner .f { opacity: .96; }
-.cube.inner .f.front  { background: linear-gradient(160deg, #ff5fe1, var(--mag) 30%, var(--vio) 68%, #2b36ff); }
-.cube.inner .f.back   { background: linear-gradient(160deg, #2b36ff, var(--vio)); }
-.cube.inner .f.right  { background: linear-gradient(200deg, var(--blu), var(--vio) 55%, var(--mag)); }
-.cube.inner .f.left   { background: linear-gradient(20deg, var(--ora), var(--mag) 50%, var(--vio)); }
-.cube.inner .f.top    { background: linear-gradient(180deg, #ffa8ec, var(--mag) 50%, #a02fff); }
-.cube.inner .f.bottom { background: linear-gradient(0deg, var(--ora), #ff4fb0); }
+/* the gem inside: a hexagonal dipyramid turning against the glass */
+.inner-gem {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  --r: calc(var(--cube) * .46);
+  width: calc(var(--r) * 2);
+  height: calc(var(--r) * 2);
+  margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1);
+  transform-style: preserve-3d;
+}
+.inner-gem .hex { transform: rotateX(-22deg) rotateY(24deg); }
+@media (prefers-reduced-motion: no-preference) { .inner-gem .hex { animation: spin-gem 26s linear infinite; } }
+@keyframes spin-gem { from { transform: rotateX(-22deg) rotateY(384deg); } to { transform: rotateX(-22deg) rotateY(24deg); } }
+
+/* the small bookend cube above Contact */
+.scene-wrap.mini { --cube: clamp(100px, 10vw, 132px); grid-column: auto; margin: 0 auto 3.5rem; perspective: 600px; }
+.scene-wrap.mini .cube-glow { background: radial-gradient(closest-side at 50% 50%, rgba(79, 209, 255, .5), rgba(123, 47, 247, .35) 50%, transparent 82%); }
 
 /* --- feature tile (right of the cube) --- */
 
@@ -1068,7 +1125,7 @@ strong { font-weight: 600; color: var(--ink); }
   .facts-strip { grid-template-columns: 1fr; }
   .facts-strip > div { border-left: 0 !important; border-top: 1px solid var(--line); }
   .facts-strip > div:first-child { border-top: 0; }
-  .gem-a { --a: 30px; }
+  .gem-a { --r: 34px; }
   .gem-b { display: none; }
 }
 
@@ -1087,7 +1144,7 @@ strong { font-weight: 600; color: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .glass, .scene, .gem3d { transform: none; }
+  .glass, .scene, .hexgem { transform: none; }
   .aurora span { transform: none; }
   .feature-tile, .plus-grid, .squiggle { translate: none; }
   .squiggle path { stroke-dasharray: none; }
@@ -1097,7 +1154,7 @@ strong { font-weight: 600; color: var(--ink); }
 
 @media print {
   html, body { background: #fff; }
-  .aurora, .site-header, .skip-link, .plus-grid, .squiggle, .gem3d, .scene-wrap, .hero-orbs, .badge, .site-footer a[href="#top"] { display: none !important; }
+  .aurora, .site-header, .skip-link, .plus-grid, .squiggle, .hexgem, .scene-wrap, .hero-orbs, .badge, .site-footer a[href="#top"] { display: none !important; }
   .frame { margin: 0; border: 0; box-shadow: none; background: #fff; color: #000; }
   .frame::before { display: none; }
   .glass, .stat, .tags li { background: #fff; color: #000; border-color: #ccc; -webkit-backdrop-filter: none; backdrop-filter: none; transform: none; box-shadow: none; }
