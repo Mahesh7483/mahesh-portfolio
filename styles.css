@@ -75,9 +75,7 @@ html {
   background: #b7a5ff;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -184,12 +182,10 @@ strong { font-weight: 600; color: var(--ink); }
 
 @media (min-width: 900px) { .aurora span { filter: blur(30px); } }
 
-@media (prefers-reduced-motion: no-preference) {
-  .aurora .a1 { animation: drift-1 36s ease-in-out infinite alternate; }
-  .aurora .a2 { animation: drift-2 29s ease-in-out infinite alternate; }
-  .aurora .a3 { animation: drift-3 41s ease-in-out infinite alternate; }
-  .aurora .a4 { animation: drift-4 33s ease-in-out infinite alternate; }
-}
+.aurora .a1 { animation: drift-1 36s ease-in-out infinite alternate; }
+.aurora .a2 { animation: drift-2 29s ease-in-out infinite alternate; }
+.aurora .a3 { animation: drift-3 41s ease-in-out infinite alternate; }
+.aurora .a4 { animation: drift-4 33s ease-in-out infinite alternate; }
 
 @keyframes drift-1 { from { translate: 0 0; scale: 1;    rotate: 0deg; } to { translate: 12vw 10vh;   scale: 1.18; rotate: 40deg; } }
 @keyframes drift-2 { from { translate: 0 0; scale: 1.05; }               to { translate: -18vw -14vh; scale: .9; } }
@@ -271,7 +267,7 @@ strong { font-weight: 600; color: var(--ink); }
   letter-spacing: -.02em;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), 0 6px 18px -6px rgba(180, 140, 255, .8);
 }
-@media (prefers-reduced-motion: no-preference) { .brand-mark { animation: edge-spin 16s linear infinite; } }
+ .brand-mark { animation: edge-spin 16s linear infinite; } 
 
 .nav-links {
   display: flex;
@@ -294,6 +290,25 @@ strong { font-weight: 600; color: var(--ink); }
 }
 .nav-links li a:hover { color: var(--ink); }
 .nav-links li a.is-active { color: var(--ink); border-bottom-color: var(--g3); }
+
+.motion-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  flex: none;
+  transition: color .2s, border-color .2s;
+}
+.motion-toggle:hover { color: var(--g3); border-color: var(--g3); }
+.motion-toggle .icon { width: 17px; height: 17px; }
+.motion-toggle .icon-motion-off { display: none; }
+:root[data-motion="off"] .motion-toggle .icon-motion-off { display: block; }
+:root[data-motion="off"] .motion-toggle .icon-motion-on { display: none; }
 
 .nav-toggle {
   display: none;
@@ -425,9 +440,7 @@ strong { font-weight: 600; color: var(--ink); }
 }
 .sq-left { left: -150px; bottom: -40px; width: 340px; height: 220px; }
 .sq-right { right: 6%; bottom: -170px; width: 260px; height: 260px; }
-@media (prefers-reduced-motion: no-preference) {
-  .squiggle path { stroke-dasharray: 600; stroke-dashoffset: 600; animation: draw 2.4s .4s ease-out forwards; }
-}
+.squiggle path { stroke-dasharray: 600; stroke-dashoffset: 600; animation: draw 2.4s .4s ease-out forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
 /* --- floating crystals: hexagonal dipyramids, 12 triangular faces ---
@@ -452,7 +465,7 @@ strong { font-weight: 600; color: var(--ink); }
   transform: rotateX(-30deg);
   will-change: transform;
 }
-@media (prefers-reduced-motion: no-preference) { .hexgem .hex { animation: tumble var(--t, 18s) linear infinite; } }
+ .hexgem .hex { animation: tumble var(--t, 18s) linear infinite; } 
 @keyframes tumble { from { transform: rotateX(-30deg) rotateY(0deg); } to { transform: rotateX(-30deg) rotateY(360deg); } }
 
 .hex i {
@@ -551,11 +564,9 @@ strong { font-weight: 600; color: var(--ink); }
 .gem-a { --r: clamp(44px, 4.6vw, 62px); --dp: 26px; --t: 20s; left: 5%; top: -6%; rotate: -12deg; }
 .gem-b { --r: clamp(22px, 2.3vw, 30px); --dp: 42px; --t: 13s; left: 17%; bottom: 16%; rotate: 16deg; }
 .gem-c { --r: clamp(26px, 2.7vw, 36px); --dp: 16px; --t: 24s; right: 13%; bottom: 4%; rotate: 8deg; }
-@media (prefers-reduced-motion: no-preference) {
-  .gem-a { animation: float-a 7s ease-in-out infinite; }
-  .gem-b { animation: float-b 5.5s ease-in-out infinite; }
-  .gem-c { animation: float-a 8.5s 1s ease-in-out infinite; }
-}
+.gem-a { animation: float-a 7s ease-in-out infinite; }
+.gem-b { animation: float-b 5.5s ease-in-out infinite; }
+.gem-c { animation: float-a 8.5s 1s ease-in-out infinite; }
 @keyframes float-a { 0%, 100% { translate: 0 0; } 50% { translate: 0 -14px; } }
 @keyframes float-b { 0%, 100% { translate: 0 0; } 50% { translate: 0 10px; } }
 
@@ -600,7 +611,7 @@ strong { font-weight: 600; color: var(--ink); }
   transform: rotateX(calc(var(--hy, 0) * -7deg)) rotateY(calc(var(--hx, 0) * 9deg));
   transition: transform .8s cubic-bezier(.2, .8, .2, 1);
 }
-@media (prefers-reduced-motion: no-preference) { .scene { animation: bob 6s ease-in-out infinite; } }
+ .scene { animation: bob 6s ease-in-out infinite; } 
 @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 
 .cube {
@@ -608,10 +619,10 @@ strong { font-weight: 600; color: var(--ink); }
   inset: 0;
   transform-style: preserve-3d;
   will-change: transform;
-  transform: rotateX(-13deg) rotateY(-30deg);
+  transform: rotateZ(-8deg) rotateX(-13deg) rotateY(-30deg);
 }
-@media (prefers-reduced-motion: no-preference) { .cube.outer { animation: spin-outer 34s linear infinite; } }
-@keyframes spin-outer { from { transform: rotateX(-13deg) rotateY(-30deg); } to { transform: rotateX(-13deg) rotateY(330deg); } }
+ .cube.outer { animation: spin-outer 34s linear infinite; } 
+@keyframes spin-outer { from { transform: rotateZ(-8deg) rotateX(-13deg) rotateY(-30deg); } to { transform: rotateZ(-8deg) rotateX(-13deg) rotateY(330deg); } }
 
 .cube .f {
   position: absolute;
@@ -644,15 +655,15 @@ strong { font-weight: 600; color: var(--ink); }
   position: absolute;
   left: 50%;
   top: 50%;
-  --r: calc(var(--cube) * .5);
+  --r: calc(var(--cube) * .40);
   width: calc(var(--r) * 2);
   height: calc(var(--r) * 2);
   margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1);
   transform-style: preserve-3d;
 }
-.inner-gem .hex { transform: rotateX(-14deg) rotateY(18deg); }
-@media (prefers-reduced-motion: no-preference) { .inner-gem .hex { animation: spin-gem 26s linear infinite; } }
-@keyframes spin-gem { from { transform: rotateX(-14deg) rotateY(378deg); } to { transform: rotateX(-14deg) rotateY(18deg); } }
+.inner-gem .hex { transform: rotateZ(6deg) rotateX(-14deg) rotateY(18deg); }
+ .inner-gem .hex { animation: spin-gem 26s linear infinite; } 
+@keyframes spin-gem { from { transform: rotateZ(6deg) rotateX(-14deg) rotateY(378deg); } to { transform: rotateZ(6deg) rotateX(-14deg) rotateY(18deg); } }
 
 /* the small bookend cube above Contact */
 .scene-wrap.mini { --cube: clamp(100px, 10vw, 132px); grid-column: auto; margin: 0 auto 3.5rem; perspective: 600px; }
@@ -789,7 +800,7 @@ strong { font-weight: 600; color: var(--ink); }
   letter-spacing: 2.5px;
   text-transform: uppercase;
 }
-@media (prefers-reduced-motion: no-preference) { .badge-ring { animation: rotate 14s linear infinite; } }
+ .badge-ring { animation: rotate 14s linear infinite; } 
 @keyframes rotate { to { rotate: 360deg; } }
 .badge-arrow {
   display: grid;
@@ -1072,7 +1083,7 @@ strong { font-weight: 600; color: var(--ink); }
   transition: opacity .4s ease;
 }
 .glass:hover::before { opacity: 1; }
-@media (prefers-reduced-motion: no-preference) { .glass::before { animation: edge-spin 12s linear infinite; } }
+ .glass::before { animation: edge-spin 12s linear infinite; } 
 @keyframes edge-spin { to { --edge-angle: 360deg; } }
 
 /* specular highlight following the pointer (script.js sets --mx/--my) */
@@ -1092,14 +1103,12 @@ strong { font-weight: 600; color: var(--ink); }
 
 /* ---------- reveal on scroll (JS-gated so nothing hides without it) ---------- */
 
-@media (prefers-reduced-motion: no-preference) {
-  html.js .reveal {
-    opacity: 0;
-    translate: 0 14px;
-    transition: opacity .6s ease, translate .6s ease;
-  }
-  html.js .reveal.in { opacity: 1; translate: none; }
+html.js .reveal {
+  opacity: 0;
+  translate: 0 14px;
+  transition: opacity .6s ease, translate .6s ease;
 }
+html.js .reveal.in { opacity: 1; translate: none; }
 
 /* ---------- responsive: tablet and phone ---------- */
 
@@ -1161,12 +1170,33 @@ strong { font-weight: 600; color: var(--ink); }
   .aurora { opacity: .5; }
 }
 
+/* Motion switch. Animation runs by default; the control in the navigation
+   turns it off and remembers the choice. Without JavaScript an operating-system
+   reduced-motion preference still turns everything off. */
+:root[data-motion="off"] *,
+:root[data-motion="off"] *::before,
+:root[data-motion="off"] *::after { animation: none !important; transition: none !important; }
+:root[data-motion="off"] .glass,
+:root[data-motion="off"] .scene,
+:root[data-motion="off"] .hexgem,
+:root[data-motion="off"] .aurora span { transform: none; }
+:root[data-motion="off"] .feature-tile,
+:root[data-motion="off"] .plus-grid,
+:root[data-motion="off"] .squiggle { translate: none; }
+:root[data-motion="off"] .squiggle path { stroke-dasharray: none; }
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .glass, .scene, .hexgem { transform: none; }
-  .aurora span { transform: none; }
-  .feature-tile, .plus-grid, .squiggle { translate: none; }
-  .squiggle path { stroke-dasharray: none; }
+  :root:not([data-motion]) *,
+  :root:not([data-motion]) *::before,
+  :root:not([data-motion]) *::after { animation: none !important; transition: none !important; }
+  :root:not([data-motion]) .glass,
+  :root:not([data-motion]) .scene,
+  :root:not([data-motion]) .hexgem,
+  :root:not([data-motion]) .aurora span { transform: none; }
+  :root:not([data-motion]) .feature-tile,
+  :root:not([data-motion]) .plus-grid,
+  :root:not([data-motion]) .squiggle { translate: none; }
+  :root:not([data-motion]) .squiggle path { stroke-dasharray: none; }
 }
 
 /* ---------- print ---------- */

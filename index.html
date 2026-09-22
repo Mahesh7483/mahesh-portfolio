@@ -21,6 +21,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 
+  <script>
+    /* Motion is on unless this visitor turned it off (see the control in the nav). */
+    (function () {
+      var v = null;
+      try { v = localStorage.getItem("mr-motion"); } catch (e) {}
+      document.documentElement.dataset.motion = v === "off" ? "off" : "on";
+    })();
+  </script>
+
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -66,6 +76,10 @@
             <li><a href="#education">Education</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
+          <button class="motion-toggle" type="button" aria-pressed="true" aria-label="Turn motion off" title="Motion">
+            <svg class="icon icon-motion-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12c2-6 4 6 6 0s4 6 6 0 4 6 6 0"/></svg>
+            <svg class="icon icon-motion-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M5 6l14 12"/></svg>
+          </button>
           <a class="btn btn-grad btn-sm" href="mailto:mahesbmahesh13@gmail.com">Get in touch</a>
         </div>
       </nav>
@@ -230,10 +244,11 @@
               <li>HTML</li><li>CSS 3D</li><li>JavaScript</li><li>Liquid glass</li><li>GitHub Pages</li>
             </ul>
             <p>
-              No framework, no build step, no images. The look is my signature treatment: a dark glass panel
-              floating on a live aurora, a CSS-only 3-D glass cube with an iridescent gem inside, and frosted
-              surfaces whose highlight follows your pointer. Underneath: semantic HTML, design tokens, fluid type,
-              scroll-aware navigation, reduced-motion and reduced-transparency fallbacks.
+              No framework, no build step, no images. The centrepiece is a glass cube built entirely in CSS —
+              twelve transformed faces with a faceted gem turning inside it — over a live aurora, with frosted
+              surfaces whose highlight follows your pointer. Underneath: semantic HTML, design tokens, fluid
+              type, scroll-aware navigation, a motion switch in the navigation, and reduced-transparency
+              fallbacks.
             </p>
             <p>Every change is a commit in a public repository, so the site's history is part of the site.</p>
             <a class="card-link" href="https://github.com/Mahesh7483/mahesh-portfolio" target="_blank" rel="noopener">

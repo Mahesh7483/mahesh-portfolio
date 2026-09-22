@@ -1,5 +1,5 @@
-/* Mahesh R — portfolio: mobile nav, active section, reveal, and the
-   signature pointer-driven light (aurora parallax, glass specular + tilt).
+/* Mahesh R — portfolio: motion switch, mobile nav, active section, reveal,
+   and the pointer-driven light (aurora parallax, glass specular + tilt).
    Everything here is progressive enhancement; the page reads fine without it. */
 
 (function () {
@@ -8,7 +8,35 @@
   var root = document.documentElement;
   root.classList.add("js");
 
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* ---------- motion switch ----------
+     data-motion is set before first paint by the inline script in <head>.
+     It defaults to "on"; the control below turns it off and remembers that. */
+
+  var MOTION_KEY = "mr-motion";
+  var motionToggle = document.querySelector(".motion-toggle");
+
+  function motionOn() {
+    return root.dataset.motion !== "off";
+  }
+
+  function syncToggle() {
+    if (!motionToggle) return;
+    var on = motionOn();
+    motionToggle.setAttribute("aria-pressed", String(on));
+    motionToggle.setAttribute("aria-label", on ? "Turn motion off" : "Turn motion on");
+  }
+
+  function setMotion(on) {
+    root.dataset.motion = on ? "on" : "off";
+    try { localStorage.setItem(MOTION_KEY, on ? "on" : "off"); } catch (e) { /* private mode */ }
+    syncToggle();
+    document.dispatchEvent(new CustomEvent("motionchange", { detail: { on: on } }));
+  }
+
+  syncToggle();
+  if (motionToggle) {
+    motionToggle.addEventListener("click", function () { setMotion(!motionOn()); });
+  }
 
   /* ---------- mobile nav ---------- */
 
@@ -65,7 +93,11 @@
 
   var reveals = document.querySelectorAll(".reveal");
 
-  if (!reduce && "IntersectionObserver" in window) {
+  function revealAll() {
+    reveals.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  if (motionOn() && "IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
@@ -73,15 +105,20 @@
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
     reveals.forEach(function (el) { io.observe(el); });
   } else {
-    reveals.forEach(function (el) { el.classList.add("in"); });
+    revealAll();
   }
 
-  /* ---------- signature: aurora parallax + liquid-glass light ----------
-     Fine pointers only, never under reduced motion. One requestAnimationFrame
-     per pointer burst, writing CSS variables only; the compositor does the rest. */
+  // turning motion off mid-scroll must not leave anything hidden
+  document.addEventListener("motionchange", function (e) {
+    if (!e.detail.on) revealAll();
+  });
+
+  /* ---------- pointer-driven light ----------
+     Fine pointers only. One requestAnimationFrame per pointer burst, writing
+     CSS variables; the compositor does the rest. */
 
   var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  if (finePointer && !reduce) {
+  if (finePointer) {
     var aurora = document.querySelector(".aurora");
     var glassEls = Array.prototype.slice.call(document.querySelectorAll(".glass"));
     var TILT_MAX = 2.5;      // degrees
@@ -94,8 +131,23 @@
       return el.classList.contains("card-featured") || el.classList.contains("facts-strip");
     }
 
+    function clearLight() {
+      if (aurora) {
+        aurora.style.removeProperty("--px");
+        aurora.style.removeProperty("--py");
+      }
+      root.style.removeProperty("--hx");
+      root.style.removeProperty("--hy");
+      glassEls.forEach(function (el) {
+        el.style.removeProperty("--rx");
+        el.style.removeProperty("--ry");
+      });
+    }
+
     function flush() {
       pending = false;
+      if (!motionOn()) return;
+
       if (aurora) {
         aurora.style.setProperty("--px", px.toFixed(1) + "px");
         aurora.style.setProperty("--py", py.toFixed(1) + "px");
@@ -103,6 +155,7 @@
       // normalised pointer position (-1..1) drives the 3-D scene tilt and layer parallax
       root.style.setProperty("--hx", (px / PARALLAX_MAX).toFixed(3));
       root.style.setProperty("--hy", (py / PARALLAX_MAX).toFixed(3));
+
       if (hovered) {
         var r = hovered.getBoundingClientRect();
         var nx = (hx - r.left) / r.width;   // 0..1 across the surface
@@ -140,6 +193,10 @@
         el.style.removeProperty("--rx");
         el.style.removeProperty("--ry");
       });
+    });
+
+    document.addEventListener("motionchange", function (e) {
+      if (!e.detail.on) clearLight();
     });
   }
 })();
