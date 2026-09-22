@@ -430,33 +430,67 @@ strong { font-weight: 600; color: var(--ink); }
 }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
-/* floating crystals */
-.gem {
+/* --- floating 3-D crystals: regular octahedra, 8 triangular faces ---
+   Each face is a triangle of base 2a and slant height a*sqrt(3), hinged on the
+   equator and tilted 35.26deg toward the axis; backfaces are culled so the
+   solid renders correctly from any angle. --dp is the pointer-parallax depth. */
+.gem3d {
   position: absolute;
-  display: block;
-  aspect-ratio: 1;
-  background: conic-gradient(from 210deg, var(--mag), var(--vio) 28%, var(--blu) 50%, var(--mag) 72%, var(--ora) 88%, var(--mag));
-  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-  filter: drop-shadow(0 14px 30px rgba(255, 63, 216, .35));
+  width: calc(var(--a) * 2);
+  height: calc(var(--a) * 2.83);
+  perspective: 700px;
+  pointer-events: none;
+  filter: drop-shadow(0 18px 28px rgba(255, 63, 216, .35));
+  transform: translate(calc(var(--hx, 0) * var(--dp)), calc(var(--hy, 0) * var(--dp)));
+  transition: transform .7s cubic-bezier(.2, .8, .2, 1);
 }
-.gem::after {
-  content: "";
+.oct {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, .55), transparent 45%),
-    linear-gradient(315deg, rgba(255, 255, 255, .25), transparent 40%);
-  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-  mix-blend-mode: screen;
+  transform-style: preserve-3d;
+  transform: rotateX(-18deg);
 }
-.gem-lg { width: clamp(80px, 9.5vw, 128px); left: 6%; top: -6%; rotate: -14deg; }
-.gem-sm { width: clamp(44px, 4.6vw, 60px); left: 17%; bottom: 20%; rotate: 22deg; }
+@media (prefers-reduced-motion: no-preference) { .oct { animation: tumble var(--t, 16s) linear infinite; } }
+@keyframes tumble { from { transform: rotateX(-18deg) rotateY(0deg); } to { transform: rotateX(-18deg) rotateY(360deg); } }
+
+.oct i {
+  position: absolute;
+  left: 0;
+  width: calc(var(--a) * 2);
+  height: calc(var(--a) * 1.732);
+  backface-visibility: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 48%), var(--c);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22);
+}
+.oct .u { top: calc(50% - var(--a) * 1.732); clip-path: polygon(50% 0, 100% 100%, 0 100%); transform-origin: 50% 100%; }
+.oct .d { top: 50%; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; }
+.oct .u1 { --c: linear-gradient(180deg, #ff9af0, var(--mag)); transform: rotateY(0deg)   translateZ(var(--a)) rotateX(35.26deg); }
+.oct .u2 { --c: linear-gradient(180deg, #c9b3ff, var(--vio)); transform: rotateY(90deg)  translateZ(var(--a)) rotateX(35.26deg); }
+.oct .u3 { --c: linear-gradient(180deg, #8ea0ff, var(--blu)); transform: rotateY(180deg) translateZ(var(--a)) rotateX(35.26deg); }
+.oct .u4 { --c: linear-gradient(180deg, #ffc48f, var(--ora)); transform: rotateY(270deg) translateZ(var(--a)) rotateX(35.26deg); }
+.oct .d1 { --c: linear-gradient(0deg, #b0148f, var(--mag)); transform: rotateY(0deg)   translateZ(var(--a)) rotateX(-35.26deg); }
+.oct .d2 { --c: linear-gradient(0deg, #4a12a8, var(--vio)); transform: rotateY(90deg)  translateZ(var(--a)) rotateX(-35.26deg); }
+.oct .d3 { --c: linear-gradient(0deg, #1a2aa8, var(--blu)); transform: rotateY(180deg) translateZ(var(--a)) rotateX(-35.26deg); }
+.oct .d4 { --c: linear-gradient(0deg, #b8501a, var(--ora)); transform: rotateY(270deg) translateZ(var(--a)) rotateX(-35.26deg); }
+
+.gem-a { --a: clamp(38px, 4.4vw, 56px); --dp: 26px; --t: 18s; left: 5%; top: -4%; rotate: -14deg; }
+.gem-b { --a: clamp(20px, 2.2vw, 28px); --dp: 42px; --t: 12s; left: 17%; bottom: 16%; rotate: 18deg; }
+.gem-c { --a: clamp(24px, 2.6vw, 34px); --dp: 16px; --t: 22s; right: 13%; bottom: 4%; rotate: 10deg; }
 @media (prefers-reduced-motion: no-preference) {
-  .gem-lg { animation: float-a 7s ease-in-out infinite; }
-  .gem-sm { animation: float-b 5.5s ease-in-out infinite; }
+  .gem-a { animation: float-a 7s ease-in-out infinite; }
+  .gem-b { animation: float-b 5.5s ease-in-out infinite; }
+  .gem-c { animation: float-a 8.5s 1s ease-in-out infinite; }
 }
 @keyframes float-a { 0%, 100% { translate: 0 0; } 50% { translate: 0 -14px; } }
 @keyframes float-b { 0%, 100% { translate: 0 0; } 50% { translate: 0 10px; } }
+
+/* pointer-parallax on the flat stage layers (script.js sets --hx/--hy on :root) */
+.feature-tile {
+  translate: calc(var(--hx, 0) * 12px) calc(var(--hy, 0) * 12px);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, translate .7s cubic-bezier(.2, .8, .2, 1);
+}
+.plus-grid { translate: calc(var(--hx, 0) * -10px) calc(var(--hy, 0) * -8px); transition: translate .9s ease-out; }
+.squiggle  { translate: calc(var(--hx, 0) * -16px) calc(var(--hy, 0) * -12px); transition: translate .9s ease-out; }
 
 /* --- the glass cube --- */
 
@@ -479,12 +513,24 @@ strong { font-weight: 600; color: var(--ink); }
   pointer-events: none;
 }
 
+.scene-wrap { perspective: 1500px; }
 .scene {
   position: absolute;
   inset: 0;
-  perspective: 1500px;
   transform-style: preserve-3d;
+  transform: rotateX(calc(var(--hy, 0) * -7deg)) rotateY(calc(var(--hx, 0) * 9deg));
+  transition: transform .8s cubic-bezier(.2, .8, .2, 1);
 }
+
+/* the small bookend cube above Contact */
+.scene-wrap.mini { --cube: clamp(96px, 10vw, 128px); grid-column: auto; margin: 0 auto 3.5rem; }
+.scene-wrap.mini .cube-glow { background: radial-gradient(closest-side, rgba(79, 209, 255, .5), rgba(123, 47, 247, .35) 50%, transparent 80%); }
+.cube.inner.alt .f.front  { background: linear-gradient(160deg, #b9fff6, #4fd1ff 38%, var(--vio)); }
+.cube.inner.alt .f.back   { background: linear-gradient(160deg, var(--vio), #2b36ff); }
+.cube.inner.alt .f.right  { background: linear-gradient(200deg, #2b36ff, #4fd1ff 55%, #b9fff6); }
+.cube.inner.alt .f.left   { background: linear-gradient(20deg, var(--vio), #4fd1ff 55%, #b9fff6); }
+.cube.inner.alt .f.top    { background: linear-gradient(180deg, #e6fffb, #4fd1ff 55%, #7b2ff7); }
+.cube.inner.alt .f.bottom { background: linear-gradient(0deg, var(--vio), #4fd1ff); }
 @media (prefers-reduced-motion: no-preference) { .scene { animation: bob 6s ease-in-out infinite; } }
 @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 
@@ -598,13 +644,28 @@ strong { font-weight: 600; color: var(--ink); }
 
 .hero-orbs { display: flex; gap: .9rem; padding-bottom: .4rem; }
 .hero-orbs i {
-  width: 58px;
-  height: 58px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: var(--grad);
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, .45), 0 12px 30px -12px rgba(180, 140, 255, .9);
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0) 26%),
+    radial-gradient(circle at 72% 78%, rgba(134, 230, 226, .85), rgba(134, 230, 226, 0) 42%),
+    radial-gradient(circle at 50% 50%, #c4a7ff 0%, #8a63ff 55%, #3a2a8a 100%);
+  box-shadow:
+    inset -10px -12px 20px rgba(10, 5, 40, .55),
+    inset 6px 8px 14px rgba(255, 255, 255, .28),
+    0 22px 34px -14px rgba(120, 80, 255, .8);
 }
-.hero-orbs i + i { background: linear-gradient(135deg, var(--g3), var(--g1)); }
+.hero-orbs i + i {
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0) 26%),
+    radial-gradient(circle at 72% 78%, rgba(180, 140, 255, .9), rgba(180, 140, 255, 0) 42%),
+    radial-gradient(circle at 50% 50%, #b9fff6 0%, #4fd1cf 55%, #12525a 100%);
+  box-shadow:
+    inset -10px -12px 20px rgba(5, 30, 40, .55),
+    inset 6px 8px 14px rgba(255, 255, 255, .28),
+    0 22px 34px -14px rgba(79, 209, 207, .8);
+}
 
 .hero-aside {
   display: flex;
@@ -828,6 +889,8 @@ strong { font-weight: 600; color: var(--ink); }
 /* ---------- education ---------- */
 
 .edu { gap: 2rem; }
+.edu h3 { font-size: clamp(1.5rem, 1.1vw + 1rem, 1.9rem); }
+.edu .card-sub { margin-top: .1rem; }
 @media (min-width: 800px) { .edu { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } }
 .edu-meta {
   display: flex;
@@ -979,8 +1042,9 @@ strong { font-weight: 600; color: var(--ink); }
   .pg-left { left: -4%; bottom: auto; top: 0; width: 90px; height: 150px; opacity: .6; }
   .sq-right { display: none; }
   .sq-left { left: -180px; bottom: auto; top: 30%; }
-  .gem-lg { left: 2%; top: 2%; }
-  .gem-sm { left: auto; right: 9%; bottom: auto; top: 12%; }
+  .gem-a { left: 2%; top: 2%; }
+  .gem-b { left: auto; right: 9%; bottom: auto; top: 12%; }
+  .gem-c { display: none; }
   .hero-foot { grid-template-columns: 1fr; }
   .hero-orbs { display: none; }
   .hero-aside { justify-content: space-between; }
@@ -1004,8 +1068,8 @@ strong { font-weight: 600; color: var(--ink); }
   .facts-strip { grid-template-columns: 1fr; }
   .facts-strip > div { border-left: 0 !important; border-top: 1px solid var(--line); }
   .facts-strip > div:first-child { border-top: 0; }
-  .gem-lg { width: 64px; }
-  .gem-sm { display: none; }
+  .gem-a { --a: 30px; }
+  .gem-b { display: none; }
 }
 
 /* ---------- fallbacks ---------- */
@@ -1023,8 +1087,9 @@ strong { font-weight: 600; color: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .glass { transform: none; }
+  .glass, .scene, .gem3d { transform: none; }
   .aurora span { transform: none; }
+  .feature-tile, .plus-grid, .squiggle { translate: none; }
   .squiggle path { stroke-dasharray: none; }
 }
 
@@ -1032,7 +1097,7 @@ strong { font-weight: 600; color: var(--ink); }
 
 @media print {
   html, body { background: #fff; }
-  .aurora, .site-header, .skip-link, .plus-grid, .squiggle, .gem, .scene-wrap, .hero-orbs, .badge, .site-footer a[href="#top"] { display: none !important; }
+  .aurora, .site-header, .skip-link, .plus-grid, .squiggle, .gem3d, .scene-wrap, .hero-orbs, .badge, .site-footer a[href="#top"] { display: none !important; }
   .frame { margin: 0; border: 0; box-shadow: none; background: #fff; color: #000; }
   .frame::before { display: none; }
   .glass, .stat, .tags li { background: #fff; color: #000; border-color: #ccc; -webkit-backdrop-filter: none; backdrop-filter: none; transform: none; box-shadow: none; }

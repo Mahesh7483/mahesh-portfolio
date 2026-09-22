@@ -100,6 +100,9 @@
         aurora.style.setProperty("--px", px.toFixed(1) + "px");
         aurora.style.setProperty("--py", py.toFixed(1) + "px");
       }
+      // normalised pointer position (-1..1) drives the 3-D scene tilt and layer parallax
+      root.style.setProperty("--hx", (px / PARALLAX_MAX).toFixed(3));
+      root.style.setProperty("--hy", (py / PARALLAX_MAX).toFixed(3));
       if (hovered) {
         var r = hovered.getBoundingClientRect();
         var nx = (hx - r.left) / r.width;   // 0..1 across the surface
@@ -123,6 +126,12 @@
       hx = e.clientX; hy = e.clientY;
       schedule();
     }, { passive: true });
+
+    // ease everything back to rest when the pointer leaves the window
+    document.addEventListener("pointerleave", function () {
+      px = 0; py = 0; hovered = null;
+      schedule();
+    });
 
     glassEls.forEach(function (el) {
       el.addEventListener("pointerenter", function () { hovered = el; schedule(); });
