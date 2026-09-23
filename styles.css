@@ -401,9 +401,7 @@ button { font: inherit; color: inherit; }
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  animation: sway-cube 14s ease-in-out infinite;
 }
-@keyframes sway-cube { 0%, 100% { transform: rotateY(0deg); } 50% { transform: rotateY(-9deg); } }
 
 .glass-cube .f {
   position: absolute;
@@ -430,19 +428,18 @@ button { font: inherit; color: inherit; }
   background:
     radial-gradient(55% 34% at 0% 0%, rgba(255, 30, 120, .85), rgba(255, 40, 200, .35) 45%, transparent 72%),
     radial-gradient(75% 30% at 85% 100%, rgba(235, 252, 255, .75), rgba(0, 185, 245, .85) 30%, rgba(0, 150, 240, .3) 60%, transparent 80%),
-    radial-gradient(60% 50% at 0% 70%, rgba(255, 30, 220, .35), transparent 70%),
     linear-gradient(120deg, rgba(255, 255, 255, .03), rgba(160, 130, 255, .05));
-  box-shadow: inset calc(-.35 * var(--u)) 0 calc(.6 * var(--u)) calc(-.3 * var(--u)) rgba(120, 240, 255, .75), inset 0 0 calc(2.5 * var(--u)) rgba(255, 60, 220, .22);
+  box-shadow: inset calc(-.35 * var(--u)) 0 calc(.6 * var(--u)) calc(-.3 * var(--u)) rgba(120, 240, 255, .75), inset 0 0 calc(1.2 * var(--u)) rgba(255, 60, 220, .12);
 }
 .f.front  {
   border-color: rgba(255, 255, 255, .78);
   border-left: 2px solid rgba(160, 248, 255, 1);
   background:
     radial-gradient(42% 38% at 100% 100%, rgba(255, 246, 170, .95), rgba(255, 180, 70, .75) 35%, rgba(255, 100, 60, .3) 65%, transparent 82%),
-    radial-gradient(60% 34% at 40% 100%, rgba(255, 30, 200, .8), rgba(255, 30, 200, .25) 55%, transparent 80%),
-    radial-gradient(50% 60% at 100% 20%, rgba(255, 60, 220, .45), transparent 70%),
+    radial-gradient(46% 16% at 40% 100%, rgba(255, 30, 200, .8), rgba(255, 30, 200, .2) 55%, transparent 80%),
+    radial-gradient(22% 50% at 100% 30%, rgba(255, 60, 220, .4), transparent 70%),
     linear-gradient(200deg, rgba(190, 150, 255, .08), rgba(255, 255, 255, .01) 55%);
-  box-shadow: inset calc(.35 * var(--u)) 0 calc(.6 * var(--u)) calc(-.3 * var(--u)) rgba(120, 240, 255, .75), inset 0 0 calc(2.5 * var(--u)) rgba(255, 70, 210, .2);
+  box-shadow: inset calc(.35 * var(--u)) 0 calc(.6 * var(--u)) calc(-.3 * var(--u)) rgba(120, 240, 255, .75), inset 0 0 calc(1.2 * var(--u)) rgba(255, 70, 210, .12);
 }
 .f.bottom {
   background:
@@ -462,29 +459,25 @@ button { font: inherit; color: inherit; }
   background:
     radial-gradient(closest-side at 35% 55%, rgba(0, 180, 240, .32), transparent 80%),
     radial-gradient(closest-side at 70% 65%, rgba(255, 170, 80, .3), transparent 80%),
-    radial-gradient(closest-side at 50% 50%, rgba(160, 20, 240, .35), transparent 85%);
+    radial-gradient(closest-side at 50% 50%, rgba(160, 20, 240, .18), transparent 85%);
   filter: blur(calc(2.2 * var(--u)));
   pointer-events: none;
 }
 
-/* the dodecahedral crystal inside the glass. Its transform undoes the glass
-   pose, then applies its own world pose (--crystal-pose, from crystals.css):
-   a pentagon facing the viewer with a sharp vertex pointing down, as in the reference.
-   Lighting was baked for that pose in tools/polyhedra.py. */
+/* the diamond resting inside the glass. Its transform undoes the glass pose,
+   then applies --crystal-pose from crystals.css: lying on one full facet on the
+   cube's floor with its point toward the viewer, as in the reference. Sizes are
+   in em of the cube side, so it fits the glass at any scale. It rests, so it
+   does not sway; it moves with the glass when the pointer tilts the scene. */
 .crystal {
   position: absolute;
   left: 50%;
   top: 50%;
   width: 0;
   height: 0;
-  font-size: calc(var(--side) * 1.1);
+  font-size: var(--side);
   transform-style: preserve-3d;
   transform: rotateY(-45.9deg) rotateX(22.7deg) rotateZ(-11.9deg) var(--crystal-pose);
-  animation: sway-crystal 12s ease-in-out infinite;
-}
-@keyframes sway-crystal {
-  0%, 100% { transform: rotateY(-45.9deg) rotateX(22.7deg) rotateZ(-11.9deg) rotateY(0deg) var(--crystal-pose); }
-  50%      { transform: rotateY(-45.9deg) rotateX(22.7deg) rotateZ(-11.9deg) rotateY(9deg) var(--crystal-pose); }
 }
 .crystal-indigo .poly > i { opacity: 1; }
 

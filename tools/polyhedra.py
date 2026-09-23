@@ -1,7 +1,7 @@
 """Generate the CSS for the hero's crystals.
 
-Each crystal is a convex polyhedron (icosahedra floating, a dodecahedron inside
-the glass) built from flat HTML faces: every face is
+Each crystal is a convex polyhedron (two icosahedra floating, a cut diamond lying
+inside the glass) built from flat HTML faces: every face is
 an element whose clip-path is the face polygon and whose transform is
     translate3d(<corner, in em>) matrix3d(<pure rotation>)
 so the whole solid scales with the container's font-size (set in container
@@ -87,6 +87,26 @@ def dodecahedron():
             u = unit(sub(v[idx[0]], cen)); w = cross(n, u)
             idx.sort(key=lambda i: math.atan2(dot(sub(v[i], cen), w), dot(sub(v[i], cen), u)))
             faces.append(idx)
+    return v, faces
+
+
+def diamond(n=8, table=0.56, crown=0.45, pavilion=1.35):
+    """Cut gem with girdle radius 1: an n-gon table on top, n crown trapezoids,
+    n pavilion triangles meeting at the culet. Axis along y (y is down), centred."""
+    shift = (pavilion - crown) / 2
+    v = []
+    for k in range(n):
+        a = 2 * math.pi * (k + .5) / n
+        v.append([table * math.cos(a), -crown - shift, table * math.sin(a)])
+    for k in range(n):
+        a = 2 * math.pi * (k + .5) / n
+        v.append([math.cos(a), -shift, math.sin(a)])
+    v.append([0, pavilion - shift, 0])
+    faces = [list(range(n))]
+    for k in range(n):
+        j = (k + 1) % n
+        faces.append([k, j, n + j, n + k])
+        faces.append([n + k, n + j, 2 * n])
     return v, faces
 
 
@@ -204,23 +224,35 @@ def emit(selector, verts, faces, radius_em, rest, probes, ambient, extra=None):
 # Rest orientations match the CSS in styles.css, so the baked light is right.
 BIG_REST = (-14, -18, 24)
 SMALL_REST = (10, -22, -30)
-def crystal_pose():
-    """World pose of the dodecahedron inside the glass, chosen against the reference:
-    one pentagon turned toward the viewer with a vertex pointing straight down and a
-    flat edge on top, then rotateZ(10) rotateX(-16): the point sits just left of centre,
-    the top faces tip toward the viewer, and the left and lower faces catch magenta."""
-    v, faces = dodecahedron()
-    f0 = faces[0]
-    n0 = unit(mul([sum(v[i][k] for i in f0) for k in range(3)], 1 / 5))
-    A = align(n0, [0, 0, 1])
-    pts = [apply(A, v[i]) for i in f0]
-    low = max(range(5), key=lambda k: (pts[k][1] + pts[(k + 1) % 5][1]))
-    p, q = pts[low], pts[(low + 1) % 5]
-    spin = -math.degrees(math.atan2(q[1] - p[1], q[0] - p[0]))
-    return matmul(matmul(Rz(10), Rx(-16)), matmul(Rz(spin), A))
+GLASS = css_rotation(11.9, -22.7, 45.9)     # the glass cube's pose, solved from the reference
+DIAMOND = dict(n=8, table=0.56, crown=0.45, pavilion=1.35)
 
 
-CRYSTAL_REST = crystal_pose()
+def crystal_pose(yaw_offset=3.0, margin=0.01):
+    """The diamond resting on one full pavilion facet on the glass cube's floor, its
+    point toward the viewer. Built in the cube's own frame (y down = floor):
+      Rx(90)          lay it down, point toward +z, a facet centred straight below
+      Rx(-rest)       tip it until that facet lies flat (rest = facet angle to the axis)
+      Ry(yaw)         aim the point at the viewer, turned yaw_offset degrees
+    then scaled to fit inside the cube and dropped onto its floor.
+    Returns (world rotation, world translation in cube sides, circumradius in cube sides)."""
+    rest = math.degrees(math.atan2(1.0, DIAMOND['pavilion']))
+    view = apply([[GLASS[j][i] for j in range(3)] for i in range(3)], [0, 0, 1])
+    yaw = math.degrees(math.atan2(view[0], view[2])) + yaw_offset
+    M = matmul(matmul(Ry(yaw), Rx(-rest)), Rx(90))
+    v, _ = diamond(**DIAMOND)
+    L = [apply(M, p) for p in v]
+    span = max(max(q[k] for q in L) - min(q[k] for q in L) for k in range(3))
+    s = (1 - 2 * margin) / span
+    L = [mul(q, s) for q in L]
+    tl = [-(max(q[0] for q in L) + min(q[0] for q in L)) / 2,
+          0.5 - margin - max(q[1] for q in L),
+          -(max(q[2] for q in L) + min(q[2] for q in L)) / 2]
+    r = max(norm(p) for p in v)
+    return matmul(GLASS, M), apply(GLASS, tl), s * r
+
+
+CRYSTAL_REST, CRYSTAL_SHIFT, CRYSTAL_RADIUS = crystal_pose()
 
 MAGENTA = [((-0.2, -0.3, 1), '#f101ef', 1.0), ((0.8, -0.6, 0.3), '#8a0de8', 1.1),
            ((-0.7, 0.6, 0.4), '#ff5cf4', 1.0), ((0, -1, 0), '#ff4bf0', 0.7),
@@ -228,13 +260,12 @@ MAGENTA = [((-0.2, -0.3, 1), '#f101ef', 1.0), ((0.8, -0.6, 0.3), '#8a0de8', 1.1)
 VIOLET = [((0, -0.2, 1), '#a400ff', 1.2), ((-0.9, 0.2, 0.3), '#2f1cff', 1.4),
           ((0.8, 0.3, 0.4), '#ff10f0', 1.6), ((0.1, -0.9, 0.3), '#d23cff', 0.9),
           ((0.2, 1, 0.1), '#5a06c8', 0.8)]
-INDIGO = [((0.1, -0.1, 1), '#050878', 2.6), ((0.9, -0.5, 0.6), '#0b0f8e', 1.2),
-          ((0, -1, 0.3), '#0a0c6c', 1.0), ((-1, 0.1, 0.2), '#ff10f0', 2.2),
-          ((0, 1, 0.2), '#f414e6', 1.8), ((-0.3, 1, 0.4), '#ff2a8a', 0.8),
-          ((1, 0.3, 0.2), '#2a16c4', 0.8)]
-AQUA = [((0.1, -0.1, 1), '#0b3f7c', 1.8), ((-1, 0.1, 0.3), '#3fd4ff', 1.3),
-        ((0, 1, 0.3), '#7a5cf0', 1.1), ((1, 0, 0.3), '#2b36ff', 1.0), ((0, -1, 0.3), '#8ff0ff', 0.8)]
-
+INDIGO = [((0, 0, 1), '#050878', 7.0), ((-1, -0.1, 0.25), '#ff10f0', 2.6),
+          ((0.75, 0.75, 0.1), '#f414e6', 1.1), ((0, -1, 0.3), '#0a0c6c', 1.0),
+          ((1, -0.2, 0.3), '#10128a', 0.9), ((-0.4, 0.9, 0.2), '#ff2a8a', 0.6)]
+AQUA = [((0, 0, 1), '#0b3f7c', 7.0), ((-1, -0.1, 0.25), '#3fd4ff', 2.6),
+        ((0.75, 0.75, 0.1), '#7a5cf0', 1.1), ((0, -1, 0.3), '#12306e', 1.0),
+        ((1, -0.2, 0.3), '#1c2fa0', 0.9), ((-0.4, 0.9, 0.2), '#8ff0ff', 0.6)]
 
 if __name__ == '__main__':
     out = ['/* generated by tools/polyhedra.py — do not edit by hand */']
@@ -246,11 +277,12 @@ if __name__ == '__main__':
     css, n = emit('.gem-small .poly', v, f, 0.5, SMALL_REST, VIOLET, '#2a0a7a')
     out += ['/* small floating icosahedron, %d faces */' % n, css]
 
-    v, f = dodecahedron()
-    out += [':root { --crystal-pose: %s; }' % css_matrix3d(CRYSTAL_REST)]
-    css, n = emit('.crystal-indigo .poly', v, f, 0.5, CRYSTAL_REST, INDIGO, '#06084a')
-    out += ['/* dodecahedral crystal inside the glass, %d faces */' % n, css]
-    css, _ = emit('.crystal-aqua .poly', v, f, 0.5, CRYSTAL_REST, AQUA, '#07243f')
+    v, f = diamond(**DIAMOND)
+    out += [':root { --crystal-pose: translate3d(%.4fem, %.4fem, %.4fem) %s; }'
+            % (CRYSTAL_SHIFT[0], CRYSTAL_SHIFT[1], CRYSTAL_SHIFT[2], css_matrix3d(CRYSTAL_REST))]
+    css, n = emit('.crystal-indigo .poly', v, f, CRYSTAL_RADIUS, CRYSTAL_REST, INDIGO, '#06084a')
+    out += ['/* cut diamond resting on its side in the glass, point forward, %d faces */' % n, css]
+    css, _ = emit('.crystal-aqua .poly', v, f, CRYSTAL_RADIUS, CRYSTAL_REST, AQUA, '#07243f')
     out += [css]
 
     print('\n'.join(out))
