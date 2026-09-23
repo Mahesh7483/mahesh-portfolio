@@ -206,8 +206,9 @@ BIG_REST = (-14, -18, 24)
 SMALL_REST = (10, -22, -30)
 def crystal_pose():
     """World pose of the dodecahedron inside the glass, chosen against the reference:
-    one pentagon turned toward the viewer with a flat edge at the bottom, then
-    rotateZ(10) rotateX(-8) rotateY(184) so the left and lower faces catch magenta."""
+    one pentagon turned toward the viewer with a vertex pointing straight down and a
+    flat edge on top, then rotateZ(10) rotateX(-16): the point sits just left of centre,
+    the top faces tip toward the viewer, and the left and lower faces catch magenta."""
     v, faces = dodecahedron()
     f0 = faces[0]
     n0 = unit(mul([sum(v[i][k] for i in f0) for k in range(3)], 1 / 5))
@@ -216,7 +217,7 @@ def crystal_pose():
     low = max(range(5), key=lambda k: (pts[k][1] + pts[(k + 1) % 5][1]))
     p, q = pts[low], pts[(low + 1) % 5]
     spin = -math.degrees(math.atan2(q[1] - p[1], q[0] - p[0]))
-    return matmul(matmul(matmul(Rz(10), Rx(-8)), Ry(184)), matmul(Rz(spin), A))
+    return matmul(matmul(Rz(10), Rx(-16)), matmul(Rz(spin), A))
 
 
 CRYSTAL_REST = crystal_pose()
