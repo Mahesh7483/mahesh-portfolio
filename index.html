@@ -6,11 +6,11 @@
   <title>Mahesh R — Software Engineer</title>
   <meta name="description" content="Portfolio of Mahesh R, a Computer Science undergraduate in Bangalore building practical AI-powered software: HiREady, a connected Team HQ in Notion, and more.">
   <meta name="author" content="Mahesh R">
-  <meta name="theme-color" content="#0b0b14">
+  <meta name="theme-color" content="#0c1216">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Mahesh R — Software Engineer">
-  <meta property="og:description" content="Code that thinks, products that ship. CS undergraduate in Bangalore building practical AI-powered software; co-built HiREady, an AI mock-interview platform evaluated by 24 students.">
+  <meta property="og:description" content="AI that thinks, code that ships. CS undergraduate in Bangalore building practical AI-powered software; co-built HiREady, an AI mock-interview platform evaluated by 24 students.">
   <meta property="og:site_name" content="Mahesh R">
   <meta name="twitter:card" content="summary">
 
@@ -18,8 +18,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600..800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="crystals.css">
 
   <script>
     /* Motion is on unless this visitor turned it off (see the control in the nav). */
@@ -49,126 +50,92 @@
   </script>
 </head>
 <body>
-  <!-- Signature: a live aurora behind a dark glass panel. Decorative only. -->
+  <!-- Signature: a live aurora behind a dark panel. Decorative only. -->
   <div class="aurora" aria-hidden="true">
     <span class="a1"></span><span class="a2"></span><span class="a3"></span><span class="a4"></span>
   </div>
+
+  <!-- Hand-drawn lines that run off the edges of the panel. Drawn in the first
+       screen's own 1033 x 679 coordinate space, so they land where the layout puts them. -->
+  <svg class="squiggles" viewBox="0 0 1033 679" aria-hidden="true">
+    <path class="sq sq-1" d="M -70 358 C 10 346, 76 330, 88 309 C 99 288, 60 276, 15 270 C 50 262, 102 249, 117 240 C 124 232, 112 226, 91 226"/>
+    <path class="sq sq-2" d="M 563 579 C 548 574, 533 576, 534 584 C 548 612, 575 643, 599 664 C 572 652, 537 641, 519 648 C 512 657, 522 672, 538 684"/>
+  </svg>
 
   <div class="frame">
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header" id="top">
-      <nav class="nav container" aria-label="Primary">
-        <a class="brand" href="#top" aria-label="Mahesh R — home">
-          <span class="brand-mark" aria-hidden="true">MR</span>
-          <span class="brand-name">Mahesh R</span>
-        </a>
+      <a class="brand" href="#top" aria-label="Mahesh R — home"><span class="logo" aria-hidden="true"><i></i><i></i><b></b></span></a>
 
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
-          <svg class="icon icon-menu" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-          <svg class="icon icon-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </button>
-
-        <div class="nav-links" id="nav-links">
-          <ul>
-            <li><a href="#projects">Work</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-          <button class="motion-toggle" type="button" aria-pressed="true" aria-label="Turn motion off" title="Motion">
-            <svg class="icon icon-motion-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12c2-6 4 6 6 0s4 6 6 0 4 6 6 0"/></svg>
-            <svg class="icon icon-motion-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M5 6l14 12"/></svg>
-          </button>
-          <a class="btn btn-grad btn-sm" href="mailto:mahesbmahesh13@gmail.com">Get in touch</a>
-        </div>
+      <nav class="nav-links" id="nav-links" aria-label="Primary">
+        <a href="#projects">Work</a>
+        <a href="#skills">Skills</a>
+        <a href="#education">Education</a>
       </nav>
+
+      <a class="pill pill-nav" href="#contact">Get in touch</a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+        <svg class="icon icon-menu" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="icon icon-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
     </header>
 
     <main id="main">
-      <!-- ============ HERO ============ -->
+      <!-- ============ FIRST SCREEN ============
+           Every position is measured from the reference layout as a share of the
+           panel: x in % of its width, y in % of its height (see styles.css). -->
       <section class="hero" aria-labelledby="hero-title">
-        <div class="container hero-inner">
-          <p class="eyebrow center">Mahesh R · Software Engineer · AI &amp; ML · Bangalore</p>
-          <h1 id="hero-title" class="grad-text">Code that thinks.<br>Products that ship.</h1>
+        <h1 id="hero-title" class="headline">AI That Thinks,<br>Code That Ships</h1>
 
-          <div class="hero-stage">
-            <div class="plus-grid pg-left" aria-hidden="true"></div>
-            <div class="plus-grid pg-right" aria-hidden="true"></div>
+        <div class="plus-grid pg-left" aria-hidden="true"></div>
+        <div class="plus-grid pg-right" aria-hidden="true"></div>
 
-            <svg class="squiggle sq-left" viewBox="0 0 340 220" fill="none" aria-hidden="true">
-              <path d="M-30 170 C 70 170, 90 60, 165 60 S 235 140, 330 50"/>
-            </svg>
-            <svg class="squiggle sq-right" viewBox="0 0 260 260" fill="none" aria-hidden="true">
-              <path d="M10 10 C 90 10, 110 110, 50 140 S 150 220, 250 250"/>
-            </svg>
+        <div class="gem gem-big" aria-hidden="true"><div class="poly"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="gem gem-small" aria-hidden="true"><div class="poly"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
 
-            <div class="hexgem gem-a" aria-hidden="true"><div class="hex"><i class="u u1"></i><i class="u u2"></i><i class="u u3"></i><i class="u u4"></i><i class="u u5"></i><i class="u u6"></i><i class="d d1"></i><i class="d d2"></i><i class="d d3"></i><i class="d d4"></i><i class="d d5"></i><i class="d d6"></i></div></div>
-            <div class="hexgem gem-b" aria-hidden="true"><div class="hex"><i class="u u1"></i><i class="u u2"></i><i class="u u3"></i><i class="u u4"></i><i class="u u5"></i><i class="u u6"></i><i class="d d1"></i><i class="d d2"></i><i class="d d3"></i><i class="d d4"></i><i class="d d5"></i><i class="d d6"></i></div></div>
-            <div class="hexgem gem-c" aria-hidden="true"><div class="hex"><i class="u u1"></i><i class="u u2"></i><i class="u u3"></i><i class="u u4"></i><i class="u u5"></i><i class="u u6"></i><i class="d d1"></i><i class="d d2"></i><i class="d d3"></i><i class="d d4"></i><i class="d d5"></i><i class="d d6"></i></div></div>
-
-            <div class="scene-wrap" aria-hidden="true">
-              <div class="cube-glow"></div>
-              <div class="gem-halo"></div>
-              <div class="scene">
-                <div class="cube outer">
-                  <i class="f front"></i><i class="f back"></i><i class="f right"></i><i class="f left"></i><i class="f top"></i><i class="f bottom"></i>
-                </div>
-                <div class="inner-gem navy"><div class="hex"><i class="u u1"></i><i class="u u2"></i><i class="u u3"></i><i class="u u4"></i><i class="u u5"></i><i class="u u6"></i><i class="d d1"></i><i class="d d2"></i><i class="d d3"></i><i class="d d4"></i><i class="d d5"></i><i class="d d6"></i></div></div>
-              </div>
-            </div>
-
-            <a class="feature-tile glass" href="#hiready">
-              <span class="tile-kicker">Major project</span>
-              <span class="tile-num tile-name grad-text">HiREady</span>
-              <span class="tile-label">AI mock-interview &amp; job-readiness platform<br>Full-stack · 5-person team · research paper</span>
-              <span class="tile-vert">View project →</span>
-            </a>
-          </div>
-
-          <div class="hero-foot">
-            <div class="hero-copy">
-              <p>
-                I'm a Computer Science undergraduate at Atria Institute of Technology with hands-on experience in
-                ML, NLP, LLMs and full-stack development. I co-built <a href="#hiready">HiREady</a>, an AI
-                mock-interview platform evaluated by 24 students, and co-authored the paper on its reliability and
-                usability. Looking for internship and full-time roles in Software Engineering, Machine Learning and
-                AI Engineering in India.
-              </p>
-              <div class="hero-actions">
-                <a class="btn btn-grad" href="#projects">See my work</a>
-                <a class="btn btn-ghost" href="Mahesh_R_Resume.pdf" download>
-                  Download résumé
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
-                </a>
-              </div>
-            </div>
-
-            <div class="hero-orbs" aria-hidden="true"><i></i><i></i></div>
-
-            <div class="hero-aside">
-              <ul class="social" aria-label="Profiles">
-                <li><a href="https://github.com/1at23cs079-Mahi" target="_blank" rel="noopener">
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
-                  GitHub</a></li>
-                <li><a href="https://www.linkedin.com/in/mahesh-r-9a66b12a4" target="_blank" rel="noopener">
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5v9M6.5 6.4v.1M11 18.5v-5.2c0-2 1.2-3.3 3-3.3s3 1.3 3 3.3v5.2M11 9.5v9"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-                  LinkedIn</a></li>
-                <li><a href="mailto:mahesbmahesh13@gmail.com">
-                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-                  Email</a></li>
-              </ul>
-
-              <a class="badge" href="#contact" aria-label="Open to work — go to contact">
-                <svg class="badge-ring" viewBox="0 0 100 100" aria-hidden="true">
-                  <defs><path id="badge-circle" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0"/></defs>
-                  <text><textPath href="#badge-circle">OPEN TO WORK · OPEN TO WORK · </textPath></text>
-                </svg>
-                <span class="badge-arrow" aria-hidden="true">→</span>
-              </a>
-            </div>
+        <div class="cube cube-hero" aria-hidden="true">
+          <div class="cube-glow"></div>
+          <div class="scene">
+            <div class="glass-cube"><i class="f front"></i><i class="f back"></i><i class="f right"></i><i class="f left"></i><i class="f top"></i><i class="f bottom"></i></div>
+            <div class="crystal crystal-indigo"><div class="poly"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
           </div>
         </div>
+
+        <a class="media" href="#hiready" aria-label="HiREady, my major project — see how it works">
+          <span class="media-screen" aria-hidden="true">
+            <span class="ui-bar"><i></i><i></i><i></i><b>HiREady · mock interview</b></span>
+            <span class="ui-row">
+              <span class="ui-avatar">AI</span>
+              <span class="ui-bubble">Walk me through a bug you fixed in production.</span>
+            </span>
+            <span class="ui-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="ui-chips"><b>Groq LLM</b><b>Deepgram</b><b>Resume parsing</b></span>
+            <span class="play"></span>
+          </span>
+        </a>
+        <a class="media-label" href="#hiready"><span>See HiREady in action</span></a>
+
+        <p class="intro">I'm Mahesh R, a CS student in Bangalore building AI products that solve real problems with technology.</p>
+        <a class="pill pill-cta" href="#projects">See my work</a>
+
+        <div class="dots" aria-hidden="true"><i></i><i></i></div>
+
+        <ul class="profiles" aria-label="Profiles">
+          <li><a href="https://github.com/1at23cs079-Mahi" target="_blank" rel="noopener" aria-label="GitHub"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg></a></li>
+          <li><a href="https://www.linkedin.com/in/mahesh-r-9a66b12a4" target="_blank" rel="noopener" aria-label="LinkedIn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5v9M6.5 6.4v.1M11 18.5v-5.2c0-2 1.2-3.3 3-3.3s3 1.3 3 3.3v5.2M11 9.5v9"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg></a></li>
+          <li><a href="mailto:mahesbmahesh13@gmail.com" aria-label="Email"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a></li>
+        </ul>
+        <p class="profiles-caption">Find my<br>work and<br>profiles</p>
+
+        <a class="badge" href="#contact" aria-label="Get in touch">
+          <svg class="badge-ring" viewBox="0 0 100 100" aria-hidden="true">
+            <defs><path id="badge-circle" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs>
+            <text><textPath href="#badge-circle">GET IN TOUCH • GET IN TOUCH • </textPath></text>
+          </svg>
+          <span class="badge-arrow" aria-hidden="true"><svg viewBox="0 0 40 12"><path d="M1 6h36M31 1l6 5-6 5"/></svg></span>
+        </a>
       </section>
 
       <!-- ============ AT A GLANCE ============ -->
@@ -244,10 +211,11 @@
               <li>HTML</li><li>CSS 3D</li><li>JavaScript</li><li>Liquid glass</li><li>GitHub Pages</li>
             </ul>
             <p>
-              No framework, no build step, no images. The centrepiece is a glass cube built entirely in CSS —
-              twelve transformed faces with a faceted gem turning inside it — over a live aurora, with frosted
+              No framework, no build step, no images. The centrepiece is a glass cube built entirely in CSS,
+              with an icosahedral crystal inside it and two more icosahedra floating beside it —
+              80 flat faces, each placed by a generated rotation matrix — on a live aurora, with frosted
               surfaces whose highlight follows your pointer. Underneath: semantic HTML, design tokens, fluid
-              type, scroll-aware navigation, a motion switch in the navigation, and reduced-transparency
+              type, scroll-aware navigation, a motion switch in the footer, and reduced-transparency
               fallbacks.
             </p>
             <p>Every change is a commit in a public repository, so the site's history is part of the site.</p>
@@ -319,11 +287,11 @@
       <!-- ============ CONTACT ============ -->
       <section class="section container contact" id="contact" aria-labelledby="contact-title">
         <div class="plus-grid pg-contact" aria-hidden="true"></div>
-        <div class="scene-wrap mini" aria-hidden="true">
+        <div class="cube cube-mini" aria-hidden="true">
           <div class="cube-glow"></div>
           <div class="scene">
-            <div class="cube outer"><i class="f front"></i><i class="f back"></i><i class="f right"></i><i class="f left"></i><i class="f top"></i><i class="f bottom"></i></div>
-            <div class="inner-gem aqua"><div class="hex"><i class="u u1"></i><i class="u u2"></i><i class="u u3"></i><i class="u u4"></i><i class="u u5"></i><i class="u u6"></i><i class="d d1"></i><i class="d d2"></i><i class="d d3"></i><i class="d d4"></i><i class="d d5"></i><i class="d d6"></i></div></div>
+            <div class="glass-cube"><i class="f front"></i><i class="f back"></i><i class="f right"></i><i class="f left"></i><i class="f top"></i><i class="f bottom"></i></div>
+            <div class="crystal crystal-aqua"><div class="poly"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
           </div>
         </div>
         <p class="eyebrow center">04 — Contact</p>
@@ -343,7 +311,13 @@
     <footer class="site-footer">
       <div class="container footer-inner">
         <p>© 2026 Mahesh R · Hand-built with HTML, CSS &amp; a little JS</p>
-        <p>
+        <p class="footer-links">
+          <button class="motion-toggle" type="button" aria-pressed="true" aria-label="Turn motion off">
+            <svg class="icon icon-motion-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12c2-6 4 6 6 0s4 6 6 0 4 6 6 0"/></svg>
+            <svg class="icon icon-motion-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M5 6l14 12"/></svg>
+            <span>Motion</span>
+          </button>
+          <span aria-hidden="true"> · </span>
           <a href="https://github.com/Mahesh7483/mahesh-portfolio" target="_blank" rel="noopener">Source on GitHub</a>
           <span aria-hidden="true"> · </span>
           <a href="#top">Back to top ↑</a>
