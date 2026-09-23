@@ -1,6 +1,7 @@
 """Generate the CSS for the hero's crystals.
 
-Each crystal is a convex polyhedron built from flat HTML faces: every face is
+Each crystal is a convex polyhedron (icosahedra floating, a dodecahedron inside
+the glass) built from flat HTML faces: every face is
 an element whose clip-path is the face polygon and whose transform is
     translate3d(<corner, in em>) matrix3d(<pure rotation>)
 so the whole solid scales with the container's font-size (set in container
@@ -68,6 +69,40 @@ def icosahedron():
     faces = [f for f in itertools.combinations(range(12), 3)
              if all(abs(norm(sub(v[i], v[j])) - edge) < 1e-6 for i, j in itertools.combinations(f, 2))]
     return v, [list(f) for f in faces]
+
+
+def dodecahedron():
+    """12 regular pentagons; face normals are the cyclic permutations of (0, +-phi, +-1)."""
+    v = [[x, y, z] for x, y, z in itertools.product((-1, 1), repeat=3)]
+    for a, c in itertools.product((-1, 1), repeat=2):
+        v += [[0, a / PHI, c * PHI], [a / PHI, c * PHI, 0], [c * PHI, 0, a / PHI]]
+    faces = []
+    for a, c in itertools.product((-1, 1), repeat=2):
+        for n in ([0, a * PHI, c], [a * PHI, c, 0], [c, 0, a * PHI]):
+            n = unit(n)
+            d = [dot(p, n) for p in v]
+            top = max(d)
+            idx = [i for i, x in enumerate(d) if x > top - 1e-6]
+            cen = mul([sum(v[i][k] for i in idx) for k in range(3)], 1 / len(idx))
+            u = unit(sub(v[idx[0]], cen)); w = cross(n, u)
+            idx.sort(key=lambda i: math.atan2(dot(sub(v[i], cen), w), dot(sub(v[i], cen), u)))
+            faces.append(idx)
+    return v, faces
+
+
+def align(a, b):
+    """Rotation matrix taking unit vector a onto unit vector b (Rodrigues)."""
+    vx = cross(a, b); c = dot(a, b)
+    K = [[0, -vx[2], vx[1]], [vx[2], 0, -vx[0]], [-vx[1], vx[0], 0]]
+    K2 = matmul(K, K)
+    return [[(1 if i == j else 0) + K[i][j] + K2[i][j] / (1 + c) for j in range(3)] for i in range(3)]
+
+
+def css_matrix3d(R):
+    """CSS matrix3d() for rotation R (column-major)."""
+    return 'matrix3d(%s)' % ','.join('%.5f' % x for x in
+                                     [R[0][0], R[1][0], R[2][0], 0, R[0][1], R[1][1], R[2][1], 0,
+                                      R[0][2], R[1][2], R[2][2], 0, 0, 0, 0, 1])
 
 
 def geodesic(freq=2):
@@ -169,9 +204,22 @@ def emit(selector, verts, faces, radius_em, rest, probes, ambient, extra=None):
 # Rest orientations match the CSS in styles.css, so the baked light is right.
 BIG_REST = (-14, -18, 24)
 SMALL_REST = (10, -22, -30)
-# Inside the glass the crystal's world pose is rotateY(20deg) rotateX(35deg): a long
-# flat top, a point at mid-left and one at the bottom, as in the reference.
-CRYSTAL_REST = matmul(Ry(20), Rx(35))
+def crystal_pose():
+    """World pose of the dodecahedron inside the glass, chosen against the reference:
+    one pentagon turned toward the viewer with a flat edge at the bottom, then
+    rotateZ(10) rotateX(-8) rotateY(184) so the left and lower faces catch magenta."""
+    v, faces = dodecahedron()
+    f0 = faces[0]
+    n0 = unit(mul([sum(v[i][k] for i in f0) for k in range(3)], 1 / 5))
+    A = align(n0, [0, 0, 1])
+    pts = [apply(A, v[i]) for i in f0]
+    low = max(range(5), key=lambda k: (pts[k][1] + pts[(k + 1) % 5][1]))
+    p, q = pts[low], pts[(low + 1) % 5]
+    spin = -math.degrees(math.atan2(q[1] - p[1], q[0] - p[0]))
+    return matmul(matmul(matmul(Rz(10), Rx(-8)), Ry(184)), matmul(Rz(spin), A))
+
+
+CRYSTAL_REST = crystal_pose()
 
 MAGENTA = [((-0.2, -0.3, 1), '#f101ef', 1.0), ((0.8, -0.6, 0.3), '#8a0de8', 1.1),
            ((-0.7, 0.6, 0.4), '#ff5cf4', 1.0), ((0, -1, 0), '#ff4bf0', 0.7),
@@ -197,9 +245,10 @@ if __name__ == '__main__':
     css, n = emit('.gem-small .poly', v, f, 0.5, SMALL_REST, VIOLET, '#2a0a7a')
     out += ['/* small floating icosahedron, %d faces */' % n, css]
 
-    v, f = icosahedron()
+    v, f = dodecahedron()
+    out += [':root { --crystal-pose: %s; }' % css_matrix3d(CRYSTAL_REST)]
     css, n = emit('.crystal-indigo .poly', v, f, 0.5, CRYSTAL_REST, INDIGO, '#06084a')
-    out += ['/* icosahedral crystal inside the glass, %d faces */' % n, css]
+    out += ['/* dodecahedral crystal inside the glass, %d faces */' % n, css]
     css, _ = emit('.crystal-aqua .poly', v, f, 0.5, CRYSTAL_REST, AQUA, '#07243f')
     out += [css]
 
